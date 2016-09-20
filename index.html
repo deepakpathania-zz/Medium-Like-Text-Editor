@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Text Editor | Deepak Pathania</title>
+    <link rel="stylesheet" href="css/demo.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css">
+    <link rel="stylesheet" href="dist/css/medium-editor.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="dist/css/themes/default.css" id="medium-editor-theme">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+      <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+</head>
+<body>
+    <div id="container">
+        <h1>Start editing..</h1>
+        <div class="editable" id="test" ondrop="drop(event)" ondragover="allowDrop(event)">
+            
+        </div>
+    </div>
+    <button onclick="RandomWord()" class="btn btn-primary" id ="replace">Replace !</button>
+    <script src="dist/js/medium-editor.js"></script>
+    <script src="https://cdn.lukej.me/rangy/1.2.3/rangy-core.js"></script>
+    <script src="https://cdn.lukej.me/rangy/1.2.3/rangy-cssclassapplier.js"></script>
+    <script src="dist/js/medium-editor.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
+     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        rangy.init();
+        // $("#test").draggable();
+        $('.draggable').draggable();
+
+        var HighlighterButton = MediumEditor.extensions.button.extend({
+            name: 'highlighter',
+            tagNames: ['mark'],
+            contentDefault: '<b>Paint</b>',
+            contentFA: '<i class="fa fa-header"></i>',
+            aria: 'Highlight',
+            action: 'highlight',
+
+            init: function () {
+                MediumEditor.extensions.button.prototype.init.call(this);
+
+                this.classApplier = rangy.createCssClassApplier('highlight', {
+                    elementTagName: 'mark',
+                    normalize: true
+                });
+            },
+
+            handleClick: function (event) {
+                this.classApplier.toggleSelection();
+
+                // Ensure the editor knows about an html change so watchers are notified
+                // ie: <textarea> elements depend on the editableInput event to stay synchronized
+                this.base.checkContentChanged();
+            }
+        });
+        var editor = new MediumEditor('.editable', {
+            toolbar: {
+                buttons: ['bold', 'italic', 'underline', 'highlighter', 'anchor']
+            },
+            buttonLabels: 'fontawesome',
+            autoLink: true,
+            paste: {
+            forcePlainText: false,
+            },
+            extensions: {
+            'highlighter': new HighlighterButton()
+                }
+            }),
+        cssLink = document.getElementById('medium-editor-theme');
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            ev.target.appendChild(document.getElementById(data));
+        }
+</script>
+    </script>
+    <script type="text/javascript">
+        function RandomWord() {
+        var requestStr = "http://randomword.setgetgo.com/get.php?len=4";
+
+        $.ajax({
+            type: "GET",
+            url: requestStr,
+            dataType: "jsonp",
+            jsonpCallback: 'Replace'
+        });
+        console.log("randomword called");
+    }
+    function Replace(data) {
+        var node = document.getElementById('test'),
+        htmlContent = node.innerHTML,
+        str = node.textContent;
+        str.split(" ").forEach(function (item) {    
+        if(item.length == 4 ) {
+            console.log("item : ", item);
+            console.log("data.word : ", data.Word);
+            node.innerHTML = node.innerHTML.replace(item, data.Word);
+            console.log("after : ",node.innerHTML);
+        }
+    });
+    }
+    </script>
+</body>
+</html>
