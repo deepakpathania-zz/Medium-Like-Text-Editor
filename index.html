@@ -15,8 +15,7 @@
 <body>
     <div id="container">
         <h1>Start editing..</h1>
-        <div class="editable" id="test" ondrop="drop(event)" ondragover="allowDrop(event)">
-            
+        <div class="editable" id="test" ondrop="drop(event)" ondragover="allowDrop(event)"> <!--This is the main editing area where the paragraphs get populated when one hits enter -->
         </div>
     </div>
     <button onclick="RandomWord()" class="btn btn-primary" id ="replace">Replace !</button>
@@ -25,14 +24,14 @@
     <script src="https://cdn.lukej.me/rangy/1.2.3/rangy-cssclassapplier.js"></script>
     <script src="dist/js/medium-editor.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js"></script>
-     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script>
         rangy.init();
         // $("#test").draggable();
-        $('.draggable').draggable();
+        $('.draggable').draggable(); //jQuery UI's draggable function, uncomment above line and the whole text editing area becomes draggable , this line was to make the paragraphs draggable but is not being invoked.
 
-        var HighlighterButton = MediumEditor.extensions.button.extend({
+        var HighlighterButton = MediumEditor.extensions.button.extend({ //The highlighter button lets you select any text and change it's background color to red.
             name: 'highlighter',
             tagNames: ['mark'],
             contentDefault: '<b>Paint</b>',
@@ -42,23 +41,20 @@
 
             init: function () {
                 MediumEditor.extensions.button.prototype.init.call(this);
-
                 this.classApplier = rangy.createCssClassApplier('highlight', {
                     elementTagName: 'mark',
                     normalize: true
                 });
             },
-
             handleClick: function (event) {
                 this.classApplier.toggleSelection();
-
                 // Ensure the editor knows about an html change so watchers are notified
                 // ie: <textarea> elements depend on the editableInput event to stay synchronized
                 this.base.checkContentChanged();
             }
         });
-        var editor = new MediumEditor('.editable', {
-            toolbar: {
+        var editor = new MediumEditor('.editable', { //creates a new editor object
+            toolbar: { //used to specify buttons in the toolbar, has more than 15 options including text justification, headings and blockquote options.
                 buttons: ['bold', 'italic', 'underline', 'highlighter', 'anchor']
             },
             buttonLabels: 'fontawesome',
@@ -85,10 +81,10 @@
             var data = ev.dataTransfer.getData("text");
             ev.target.appendChild(document.getElementById(data));
         }
-</script>
+    </script>
     </script>
     <script type="text/javascript">
-        function RandomWord() {
+        function RandomWord() { //generated a four letter random word and passes it on to Replace function
         var requestStr = "http://randomword.setgetgo.com/get.php?len=4";
 
         $.ajax({
@@ -99,7 +95,7 @@
         });
         console.log("randomword called");
     }
-    function Replace(data) {
+    function Replace(data) { //finds all four letter words in the text by splitting the text and checking word length and then replacing with the word found from the randomword api. TODO : Implement a regex and replace all with different random words.
         var node = document.getElementById('test'),
         htmlContent = node.innerHTML,
         str = node.textContent;
